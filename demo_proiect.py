@@ -1,54 +1,43 @@
-import tkinter as tk
-from tkinter import messagebox
+import streamlit as st
+from PIL import Image
+import time
 
-class FashionAppDemo:
-    def _init_(self, root):
-        self.root = root
-        self.root.title("Netflix AI Fashion Finder - Prototip")
-        self.root.geometry("600x400")
-        self.root.configure(bg="#141414") # Culoarea Netflix
+# Setări pagină
+st.set_page_config(page_title="AI Fashion Finder", page_icon="👗")
 
-        # Simulare ecran video
-        self.video_frame = tk.Frame(root, bg="#333", width=560, height=300)
-        self.video_frame.pack(pady=20)
-        
-        self.label = tk.Label(self.video_frame, text="[ CADRU DIN SERIAL ]", 
-                              fg="white", bg="#333", font=("Arial", 14))
-        self.label.place(relx=0.5, rely=0.5, anchor="center")
+# Design stil Netflix
+st.markdown("""
+    <style>
+    .main { background-color: #111; color: white; }
+    .stButton>button { background-color: #E50914; color: white; border: none; font-weight: bold; }
+    </style>
+    """, unsafe_allow_html=True)
 
-        # Butonul magic
-        self.scan_btn = tk.Button(root, text="🔍 SCAN OUTFIT", bg="#E50914", fg="white", 
-                                  font=("Arial", 10, "bold"), command=self.start_scan)
-        self.scan_btn.pack()
+st.title("🎬 Netflix AI Fashion Finder")
+st.write("Încarcă o captură de ecran și lasă AI-ul să găsească hainele!")
 
-    def start_scan(self):
-        # Efect vizual de scanare
-        self.scan_btn.config(text="SCANNING...", state="disabled")
-        self.root.after(1500, self.show_results)
+# Componenta de upload
+uploaded_file = st.file_uploader("Alege o imagine...", type=["jpg", "png", "jpeg"])
 
-    def show_results(self):
-        # Fereastra de rezultate
-        result_win = tk.Toplevel(self.root)
-        result_win.title("Haine Găsite")
-        result_win.geometry("300x250")
-        result_win.configure(bg="white")
-
-        tk.Label(result_win, text="AI a găsit 2 produse:", font=("Arial", 12, "bold"), bg="white").pack(pady=10)
-        
-        items = [
-            "🧥 Palton Lână - Burberry (950€)",
-            "🕶️ Ochelari - Ray-Ban (150€)"
-        ]
-
-        for item in items:
-            tk.Label(result_win, text=item, bg="white", fg="black").pack(pady=5)
-
-        tk.Button(result_win, text="Adaugă în coș", bg="black", fg="white").pack(pady=20)
-        
-        self.scan_btn.config(text="🔍 SCAN OUTFIT", state="normal")
-
-# Pornire aplicație
-if _name_ == "_main_":
-    root = tk.Tk()
-    app = FashionAppDemo(root)
-    root.mainloop()
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption='Cadru procesat', use_container_width=True)
+    
+    if st.button('🔍 SCAN OUTFIT'):
+        with st.spinner('AI-ul analizează piesele vestimentare...'):
+            time.sleep(2) # Simulare AI
+            
+            st.subheader("Potriviri găsite:")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.info("*Produs 1*")
+                st.write("👗 Rochie Florală")
+                st.write("🏷️ Brand: Zara")
+                st.write("💰 Preț: 249 RON")
+            
+            with col2:
+                st.info("*Produs 2*")
+                st.write("🕶️ Ochelari Soare")
+                st.write("🏷️ Brand: Ray-Ban")
+                st.write("💰 Preț: 600 RON")
